@@ -1,0 +1,281 @@
+setwd("C:/Users/abbap/OneDrive - University Of Helsinki/Reptiles Papers/East Africa")
+setwd("C:/Users/abigpark/OneDrive - University Of Helsinki/Reptiles Papers/East Africa")
+library(tidyverse)
+library(Hmisc)
+
+#read in data for correlation analysis, including columns of change between members
+df <- read.csv("Shungura_Delta_Final_25.csv", header=T, row.names=1) 
+
+colnames(df)
+shapiro.test(df[,25]) #tests for normality for each column of data
+#shapiro.test(df$OverallHerbivoreDeltaC13)
+
+
+#Table 2
+df_masses <- df %>% dplyr::select(AquaticMass, TrionychidMass, PelomedusidMass,
+            TestudinidMass, EuthecodonMass, CrocodylusMass, MecistopsMass, PythonMass)
+df_logmass <- log10(df_masses)
+
+df_sampling <- df %>% dplyr::select(ReptileSampling, TurtleSampling, CrocSampling, SquamateSampling, MidAge)
+results2 <- cbind(df_logmass, df_sampling)
+
+#calculate  correlation
+res2 <- rcorr(as.matrix(results2),type="pearson")
+res2s <- rcorr(as.matrix(results2),type="spearman")
+
+#save output correlation and p-value into readable table
+C <- colnames(results2)
+mat <- matrix(nrow=length(C),ncol=length(C)) #empty matrix for results
+for (i in 1:length(C)) {         
+  for (j in 1:length(C)) {
+    ap <- round(res2[[3]][i,j],3) #p-value in row i, column j
+    a <- round(res2[[1]][i,j],3) #cor value
+    bp <- round(res2s[[3]][i,j],3) #p-value
+    b <- round(res2s[[1]][i,j],3) #cor value
+    mat[i,j]= paste(a,"\n", "p=",ap,"\n",b,"\n","p=",bp)
+  }
+}
+colnames(mat) <- C
+rownames(mat) <- C
+write.csv(mat, "Table2_CorrelationResults_Feb25.csv")
+
+#Table 3a
+df_masses <- df %>% select(EuthecodonMass, CrocodylusMass, MecistopsMass,
+                           TrionychidMass, PelomedusidMass,
+                           TestudinidMass,
+                           PythonMass)
+df_logmass <- log10(df_masses)
+#calculate correlations
+res3a <- rcorr(as.matrix(df_logmass),type="pearson")
+
+#save output correlation and p-value into readable table
+C <- colnames(df_masses)
+mat <- matrix(nrow=length(C),ncol=length(C)) #empty matrix for resultsfor (i in 1:length(C)) {         
+for (i in 1:length(C)) {
+  for (j in 1:length(C)) {
+    ap <- round(res3a[[3]][i,j],3) #p-value in row i, column j
+    a <- round(res3a[[1]][i,j],3) #cor value
+    mat[i,j]= paste(a,"\n", "p=",ap)
+  }
+}
+colnames(mat) <- C
+rownames(mat) <- C
+write.csv(mat, "Table3a_CorrelationResults_Feb25.csv")
+
+#Table 3b
+df_massdelta <- df %>% dplyr::select(LogEuthecodon_Delta, LogCrocodylus_Delta, LogMecistopin_Delta,
+                           LogPelo_Delta,
+                           LogTestudinid_Delta, LogPython_Delta)
+#calculate correlations
+res3b <- rcorr(as.matrix(df_massdelta),type="pearson")
+
+#save output correlation and p-value into readable table
+C <- colnames(df_massdelta)
+mat <- matrix(nrow=length(C),ncol=length(C)) #empty matrix for resultsfor (i in 1:length(C)) {         
+for (i in 1:length(C)) {
+  for (j in 1:length(C)) {
+    ap <- round(res3b[[3]][i,j],3) #p-value in row i, column j
+    a <- round(res3b[[1]][i,j],3) #cor value
+    mat[i,j]= paste(a,"\n", "p=",ap)
+  }
+}
+colnames(mat) <- C
+rownames(mat) <- C
+write.csv(mat, "Table3b_CorrelationResults_Feb25.csv")
+
+
+#Table 4a
+df_masses <- df %>% dplyr::select(PythonMass, EuthecodonMass, CrocodylusMass, MecistopsMass,
+                           AquaticMass, TrionychidMass, PelomedusidMass,
+                           TestudinidMass, 
+                           Hippos_protkaru, Hippos_aethi,
+                           Hippopotamus, Equidae,
+                           Cercopithecidae, Bovidae,
+                           Aepycerotini, Alcelaphini, Antilopini,
+                           Bovini, Neotragini, Ovibovini, Reduncini,
+                           Tragelaphini)
+df_logmass <- log10(df_masses)
+#calculate correlations
+res4p <- rcorr(as.matrix(df_logmass),type="pearson")
+res4s <- rcorr(as.matrix(df_logmass),type="spearman")
+
+#save output correlation and p-value into readable table
+C <- colnames(df_masses)
+mat <- matrix(nrow=length(C),ncol=length(C)) #empty matrix for resultsfor (i in 1:length(C)) {         
+for (i in 1:length(C)) {
+  for (j in 1:length(C)) {
+    ap <- round(res4p[[3]][i,j],3) #p-value in row i, column j
+    a <- round(res4p[[1]][i,j],3) #cor value
+    bp <- round(res4s[[3]][i,j],3) #p-value
+    b <- round(res4s[[1]][i,j],3) #cor value
+    mat[i,j]= paste(a,"\n", "p=",ap,"\n",b,"\n","p=",bp)
+  }
+}
+colnames(mat) <- C
+rownames(mat) <- C
+write.csv(mat, "Table4a_CorrelationResults_Feb25.csv")
+
+#spearman correlation with non-normal Tragelaphini mass and Hippos protkaru
+attach(df_logmass)
+cor.test(EuthecodonMass, Hippos_protkaru, method="spearman")
+
+#Table 4b
+df_massdelta <- df %>% dplyr::select(LogPython_Delta, LogEuthecodon_Delta, LogCrocodylus_Delta, LogMecistopin_Delta, 
+                              LogAquatic_Delta, LogPelo_Delta,
+                              LogTestudinid_Delta, 
+                              LogHippos_protkaru_Delta,
+                              LogHippos_aethi_Delta, 
+                              LogEquidae_Delta, 
+                             LogBovidae_Delta,
+                              LogTragelaphini_Delta)
+#calculate correlations
+res4b <- rcorr(as.matrix(df_massdelta),type="pearson")
+
+#save output correlation and p-value into readable table
+C <- colnames(df_massdelta)
+mat <- matrix(nrow=length(C),ncol=length(C)) #empty matrix for resultsfor (i in 1:length(C)) {         
+for (i in 1:length(C)) {
+  for (j in 1:length(C)) {
+    ap <- round(res4b[[3]][i,j],3) #p-value in row i, column j
+    a <- round(res4b[[1]][i,j],3) #cor value
+    mat[i,j]= paste(a,"\n", "p=",ap)
+  }
+}
+colnames(mat) <- C
+rownames(mat) <- C
+write.csv(mat, "Table4b_CorrelationResults_Feb25.csv")
+
+attach(df_massdelta)
+cor.test(LogPython_Delta, LogTragelaphini_Delta, method="pearson")
+
+
+#Table 5a
+df_masses <- df %>% dplyr::select(PythonMass, EuthecodonMass, CrocodylusMass, MecistopsMass, 
+                              AquaticMass, TrionychidMass, PelomedusidMass,
+                              TestudinidMass, Hippos_protkaru, Hippos_aethi,
+                           Hippopotamus, Equidae,
+                              Cercopithecidae, Bovidae,
+                            Tragelaphini)
+df_logmass <- log10(df_masses)
+df_sol <- df %>% dplyr::select(LevinDeltaC13, LevinDeltaO18,
+            LakeLevel, PasseySoilTemp, HeinzelinEnv, HeinzelinMaxLake)
+df5a <- cbind(df_logmass, df_sol)
+#calculate correlations
+res5a <- rcorr(as.matrix(df5a),type="pearson")
+
+#save output correlation and p-value into readable table
+C <- colnames(df5a)
+mat <- matrix(nrow=length(C),ncol=length(C)) #empty matrix for resultsfor (i in 1:length(C)) {         
+for (i in 1:length(C)) {
+  for (j in 1:length(C)) {
+    ap <- round(res5a[[3]][i,j],3) #p-value in row i, column j
+    a <- round(res5a[[1]][i,j],3) #cor value
+    mat[i,j]= paste(a,"\n", "p=",ap)
+  }
+}
+colnames(mat) <- C
+rownames(mat) <- C
+write.csv(mat, "Table5a_CorrelationResults_Feb25.csv")
+
+#spearman correlation with non-normal Heinzelin Env code, and Tragelaphini
+attach(df5a)
+cor.test(PelomedusidMass,HeinzelinEnv,  method="spearman")
+
+cor.test(Tragelaphini,Over,  method="spearman")
+
+
+#Table 5b
+df_delta <- df %>% dplyr::select(LogPython_Delta, LogEuthecodon_Delta, LogCrocodylus_Delta, LogMecistopin_Delta,
+                            LogAquatic_Delta, LogPelo_Delta,
+                            LogTestudinid_Delta, LogHippos_protkaru_Delta,
+                          LogHippos_aethi_Delta,
+                            LogEquidae_Delta, 
+                             LogBovidae_Delta,
+                            LogTragelaphini_Delta, LevinDeltaC13_Delta,
+                            LevinDeltaO18_Delta, LakeLevel_Delta,
+                          HeinzelinEnv_Delta, HeinzelinMax_Delta)
+                           # PasseySoil_Delta)
+#calculate correlations
+res5b <- rcorr(as.matrix(df_delta),type="pearson")
+
+#save output correlation and p-value into readable table
+C <- colnames(df_delta)
+mat <- matrix(nrow=length(C),ncol=length(C)) #empty matrix for resultsfor (i in 1:length(C)) {         
+for (i in 1:length(C)) {
+  for (j in 1:length(C)) {
+    ap <- round(res5b[[3]][i,j],3) #p-value in row i, column j
+    a <- round(res5b[[1]][i,j],3) #cor value
+    mat[i,j]= paste(a,"\n", "p=",ap)
+  }
+}
+colnames(mat) <- C
+rownames(mat) <- C
+write.csv(mat, "Table5b_CorrelationResults_Feb25.csv")
+
+attach(df)
+cor.test(TrionychidMass, TestudinidMass, method="pearson")
+
+
+#Table 6a
+df_masses <- df %>% dplyr::select(PythonMass,EuthecodonMass, CrocodylusMass, MecistopsMass,
+                           AquaticMass, TrionychidMass, PelomedusidMass,
+                           TestudinidMass, 
+                           Hippos_protkaru, Hippos_aethi,
+                           Hippopotamus, Equidae,
+                           Cercopithecidae, Bovidae,
+                           Tragelaphini)
+df_logmass <- log10(df_masses)
+df_fauna <- df %>% dplyr::select(OverallHerbivoreDeltaC13, OverallHerbivoreDeltaO18,
+                          AAHbovidPercent,RedunciniPercent,
+                          ProportionGrasslandIndicator,HFprecip)
+df6a <- cbind(df_logmass, df_fauna)
+#calculate correlations
+res6a <- rcorr(as.matrix(df6a),type="pearson")
+
+#save output correlation and p-value into readable table
+C <- colnames(df6a)
+mat <- matrix(nrow=length(C),ncol=length(C)) #empty matrix for resultsfor (i in 1:length(C)) {         
+for (i in 1:length(C)) {
+  for (j in 1:length(C)) {
+    ap <- round(res6a[[3]][i,j],3) #p-value in row i, column j
+    a <- round(res6a[[1]][i,j],3) #cor value
+    mat[i,j]= paste(a,"\n", "p=",ap)
+  }
+}
+colnames(mat) <- C
+rownames(mat) <- C
+write.csv(mat, "Table6a_CorrelationResults_Feb25.csv")
+
+#spearman for AAH, hippos_protkaru, Oherb dC13, tragelaphini
+attach(df6a)
+cor.test(PythonMass, OverallHerbivoreDeltaC13, method="spearman")
+
+#Table 6b
+df_delta <- df %>% dplyr::select(LogPython_Delta,LogEuthecodon_Delta, LogCrocodylus_Delta, 
+                          LogAquatic_Delta, LogPelo_Delta,
+                          LogTestudinid_Delta, 
+                          LogHippos_protkaru_Delta,
+                          LogHippos_aethi_Delta,
+                          LogEquidae_Delta, 
+                         LogBovidae_Delta,
+                          LogTragelaphini_Delta, HerbDC13_Delta,
+                          HerbDO18_Delta, AAHPerc_Delta, 
+                          RedunciniPerc_Delta, GrasslandProp_Delta,
+                          Hfprecip_Delta)
+
+#calculate correlations
+res6b <- rcorr(as.matrix(df_delta),type="pearson")
+
+#save output correlation and p-value into readable table
+C <- colnames(df_delta)
+mat <- matrix(nrow=length(C),ncol=length(C)) #empty matrix for resultsfor (i in 1:length(C)) {         
+for (i in 1:length(C)) {
+  for (j in 1:length(C)) {
+    ap <- round(res6b[[3]][i,j],3) #p-value in row i, column j
+    a <- round(res6b[[1]][i,j],3) #cor value
+    mat[i,j]= paste(a,"\n", "p=",ap)
+  }
+}
+colnames(mat) <- C
+rownames(mat) <- C
+write.csv(mat, "Table6b_CorrelationResults_Feb25.csv")
