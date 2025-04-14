@@ -1,28 +1,26 @@
 #Figures for manuscript "Body size histories of Shungura Formation reptiles in biotic and abiotic environmental context"
 
 #library(readxl)
+# read in data file. _Figures version includes interpolated series for plotting lines between observations
 df <- read_excel("ShunguraBodySize_Figures.xlsx")
 df <- df[1:12,]
-#df$VaranusMass <- as.numeric(df$VaranusMass)
-#df$PythonMass <- as.numeric(df$PythonMass)
 colnames(df)
 
-#Crocs with sampling
+#Crocodylians with sampling
 ggplot(data=df)+
   geom_line(aes(x=MidAge, y=LogEuthecodon,color="Euthecodon"), size=1.5)+
   geom_line(aes(x=MidAge, y=LogCrocodylusInterpolated,color="Crocodylus morphotype"), size=1.5)+
-  geom_line(aes(x=MidAge, y=LogMecistops_Interpolated,color="Mecistopini"), size=1.2)+
+  geom_line(aes(x=MidAge, y=LogMecistops_Interpolated,color="Mecistops"), size=1.2)+
   geom_point(aes(x=MidAge, y=LogEuthecodon,color="Euthecodon"), size=3, shape=17)+
   geom_point(aes(x=MidAge, y=LogCrocodylus,color="Crocodylus morphotype"), size=3, shape=17)+
-  geom_point(aes(x=MidAge, y=LogMecistops,color="Mecistopini"), size=3, shape=17)+
+  geom_point(aes(x=MidAge, y=LogMecistops,color="Mecistops"), size=3, shape=17)+
   geom_line(aes(x=MidAge, y=((as.numeric(df$CrocSampling)/350)+2),color="Crocodylian sampling"), size=1,lty="dashed")+
-  #geom_point(aes(x=Midpoint.Age, y=Crocd18O*50,color="dO18"), size=1, lty="dashed")+
   labs(x="Time (Ma)", y="Crocodylian Mass log10(kg)")+
   scale_color_manual(name="",values = c("Crocodylus morphotype" = "tan1", 
                                         "Euthecodon" = "orangered", "Crocodylian sampling" = "indianred4", 
                                         "Crocodylus" = "magenta3", 
                                         "Euthecodon" = "olivedrab3", "Crocodylus" = "green4",
-                                        "Mecistopini"="purple3"))+
+                                        "Mecistops"="purple3"))+
   scale_x_continuous(breaks=c(-3.6,-3.44,-2.94,-2.53,-2.39,-2.32,-2.27,-2.06,-1.91,-1.76,-1.53,-1.38,-1.09))+
   theme(panel.grid.minor = element_blank(),panel.background = element_rect(fill="white",color="black"),
         panel.grid.major = element_line(linetype = 'solid',
@@ -34,12 +32,10 @@ ggplot(data=df)+
   geom_line(aes(x=MidAge, y=LogTrionychidInterpolated,color="Trionychidae"), size=1.5)+
   geom_line(aes(x=MidAge, y=LogPelomedusid,color="Pelomedusidae"), size=1.5)+
   geom_line(aes(x=MidAge, y=LogTestudinidInterpolated,color="Terrestrial tortoises"), size=1.5)+
-  
   geom_point(aes(x=MidAge, y=LogTrionychid,color="Trionychidae"), size=3, shape=17)+
   geom_point(aes(x=MidAge, y=LogPelomedusid,color="Pelomedusidae"), size=3, shape =17)+
   geom_point(aes(x=MidAge, y=LogTestudinid,color="Terrestrial tortoises"), size=3, shape=17)+
   geom_line(aes(x=MidAge, y=(as.numeric(df$TurtleSampling)/75),color="Turtle sampling"), size=1, lty="dashed")+
-  # geom_line(aes(x=Midpoint.Age, y=ReptileSampling,color="Reptile Sampling"), size=2)+
   labs(x="Time (Ma)", y="Body Mass log(kg) or Occurrence Count")+
   scale_color_manual(name="",values = c("Pelomedusidae" = "lightskyblue", "Trionychidae"= "olivedrab3", 
                                         "Terrestrial tortoises" = "darkolivegreen", 
@@ -51,16 +47,11 @@ ggplot(data=df)+
                                         colour = "lightgrey"),
         legend.key = element_blank(),axis.text.x=element_text(angle = 90))
 
-# Squamates with sampling
+# Python with sampling
 ggplot(data=df)+
-  #geom_line(aes(x=MidAge, y=LogVaranusInterpolated,color="Varanidae"), size=1.5)+
   geom_line(aes(x=MidAge, y=LogPythonInterpolated,color="Pythonidae"), size=1.5)+
-  #geom_line(aes(x=MidAge, y=LogTestudinidInterpolated,color="Terrestrial tortoises"), size=1.5)+
-  #geom_point(aes(x=MidAge, y=LogVaranus,color="Varanidae"), size=3, shape=17)+
   geom_point(aes(x=MidAge, y=LogPython,color="Pythonidae"), size=3, shape=17)+
-  #geom_point(aes(x=MidAge, y=LogTestudinid,color="Terrestrial tortoises"), size=2.5)+
   geom_line(aes(x=MidAge, y=(SquamateSampling/6),color="Squamate Sampling"), size=1, lty="dashed")+
-  # geom_line(aes(x=Midpoint.Age, y=ReptileSampling,color="Reptile Sampling"), size=2)+
   labs(x="Time (Ma)", y="Body Mass log(kg) or Occurrence Count")+
   scale_color_manual(name="",values = c("Pythonidae" = "purple4", "Varanidae"= "red4", 
                                         "Terrestrial tortoises" = "darkolivegreen", 
@@ -72,12 +63,9 @@ ggplot(data=df)+
                                         colour = "lightgrey"),
         legend.key = element_blank(),axis.text.x=element_text(angle = 90))
 
-#Fig 4
 #tortoises with dC13
 ggplot()+
-  #geom_line(aes(x=MidAge, y=TurtleSampling,color="Turtle Sampling"), size=0.8, lty="dashed")+
   geom_point(data= df[1:12,], aes(x=MidAge, y=TestudinidMass,color="Terrestrial tortoises"), size=1)+
-  #geom_line(aes(x=MidAge, y=VaranusMass,color="Varanus"), size=1)+
   geom_point(data=df[1:12,], aes(x=MidAge, y=PythonMass,color="Python"), size=1)+
   geom_line(data=df, aes(x=LevinAge, y=((LevindC13*10)+240),color="Paleosol carbon isotopes"), size=0.6)+
   geom_point(data=df, aes(x=LevinAge, y=((LevindC13*10)+240), color= "Paleosol carbon isotopes"),size=1)+
@@ -94,12 +82,10 @@ ggplot()+
                                         colour = "lightgrey"),
         legend.key = element_blank(),axis.text.x=element_text(angle = 90))
 
-#Poster-- terrestrial with c13 records
+#Terrestrial with c13 records
 ggplot(data=df)+
-  #geom_line(aes(x=MidAge, y=TurtleSampling,color="Turtle Sampling"), size=0.8, lty="dashed")+
   geom_line(aes(x=MidAge, y=TestudinidMass,color="Terrestrial tortoises"), size=1)+
   geom_point(aes(x=MidAge, y=TestudinidMass,color="Terrestrial tortoises"), shape=17, size=3)+
-  #geom_line(aes(x=MidAge, y=VaranusMass,color="Varanus"), size=1)+
   geom_point(aes(x=MidAge, y=PythonMass,color="Python"), shape=17, size=3)+
   geom_line(aes(x=MidAge, y=PythonMass,color="Python"), size=1)+
   geom_line(aes(x=LevinAge, y=((LevindC13*10)+280),color="Paleosol carbon isotopes"), size=0.6)+
@@ -114,35 +100,22 @@ ggplot(data=df)+
                                         "Paleosol carbon isotopes"= "darkorchid1"))+
   scale_x_continuous(breaks=c(-3.44,-2.94,-2.53,-2.39,-2.32,-2.27,-2.06,-1.91,-1.76,-1.53,-1.38,-1.09))+
   scale_y_continuous(breaks=c(-100,-80,-60,-40,-20,0,20,40,60,80,100,140,120, 160, 180,200,220,240))+
-  #scale_y_continuous(breaks = seq(0, 400, by = 0.5))+
   theme(panel.grid.minor = element_blank(),panel.background = element_rect(fill="white",color="black"),
         panel.grid.major = element_line(linetype = 'solid',
                                         colour = "lightgrey"),
         legend.key = element_blank(),axis.text.x=element_text(angle = 90))
 
-
-# Poster-- aquatic with laek levels, o18 records, hippos?
-
-# Fig 5: turtles with ll and herbivore isotopes
-df$NutzLakeLevel <- c(NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.00,  0.01,  6.58, 11.51 , 6.93, 
-                      1.05  ,1.70 , 4.23,  6.14,  4.14,
-                      5.76,  7.69,  5.79,  5.05,  7.17,  9.38,  6.90, 11.40,  7.62,  3.72,
-                      6.50,  8.13,  6.02,  4.30 , 1.82,  7.45,  5.02, 11.44,  7.93, NA,
-                      NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
-LLu <- df$NutzLakeLevel
-LLa <- df$
+# Turtles with lake level and herbivore isotopes
 colnames(df)
 ggplot()+
   geom_line(data=df[1:12,], aes(x=MidAge, y=AquaticMass,color="Aquatic"), size=1.5)+
   geom_point(data=df[1:12,], aes(x=MidAge, y=PelomedusidMass,color="Pelomedusidae"), size=3, shape=17)+
   geom_point(data=df[1:12,], aes(x=MidAge, y=TrionychidMass,color="Trionychidae"), size=3, shape=17)+
-  #geom_point(aes(x=MidAge, y=LogPelomedusid,color="Pelomedusidae"), size=3, shape =17)+
   geom_line(data=df, aes(x=LLAge, y=(NutzLakeLevel/1.5)+20,color="Lake Level"), size=1)+
   geom_point(data=df,aes(x=LLAge, y=(NutzLakeLevel/1.5)+20,color="Lake Level"), size=1.5, shape=19)+
   geom_line(data=df[1:12,], aes(x=MidAge, y=(OverallHerbivoreDeltaO18*2)-5,color="herbivore"), size=1.5)+
   geom_line(data=df[1:12,], aes(x=MidAge, y=(as.numeric(LevinDeltaO18)*2)-5,color="soil carbon"), size=0.8)+
   geom_point(data=df, aes(x=LevinAge, y=(Levind18O*2)-5,color="soil carbon"), size=1.5, shape=19)+
-  # geom_line(aes(x=Midpoint.Age, y=ReptileSampling,color="Reptile Sampling"), size=2)+
   labs(x="Time (Ma)", y="Body Mass log(kg) or Occurrence Count")+
   scale_color_manual(name="",values = c("Lake Level" = "blue", 
                                         "PaleosolO" = "darkorchid1", "Aquatic" = "lightskyblue",
@@ -158,12 +131,10 @@ ggplot()+
                                         colour = "lightgrey"),
         legend.key = element_blank(),axis.text.x=element_text(angle = 90))
 
-
-#Fig 6 
-#Crocs and hippos with lake level
+#Crocodylians and hippos with lake level
 ggplot()+
   geom_line(aes(x=df$MidAge, y=df$CrocodylusInterpolated, color="Crocodylus size"), size=1)+
-  geom_line(aes(x=df$MidAge, y=df$MecistopsMass,color="Mecistopini size"), size=1)+
+  geom_line(aes(x=df$MidAge, y=df$MecistopsMass,color="Mecistops size"), size=1)+
   geom_line(aes(x=df$MidAge, y=df$EuthecodonMass,color="Euthecodon size"), size=1)+
   geom_line(aes(x=df$MidAge, y=(df$HeinzelinMaxLake*50)-430,color="DepEnv"), size=1)+
   geom_line(data=df, aes(x=LLAge, y=(NutzLakeLevel*50)-600,color="Lake Level"), size=0.8)+
@@ -174,8 +145,6 @@ ggplot()+
   geom_point(aes(x=df$MidAge, y=df$CrocodylusMass, color="Crocodylus size"), size=3, shape=17)+
   geom_point(aes(x=df$MidAge, y=df$MecistopsMass,color="Mecistopini size"), size=3, shape=17)+
   geom_point(aes(x=df$MidAge, y=df$EuthecodonMass,color="Euthecodon size"), size=3, shape=17)+
- # geom_line(aes(x=df$MidAge, y=((df$OverallHerbivoreDeltaC13/2)),color="Herbivore"), size=1.5)+
-  #geom_line(aes(x=Midpoint.Age, y=AquaticMass,color="Aquatic size"), size=2)+
   labs(x="Time (Ma)", y="Body Mass (kg)\n Lake Level Relative Scale")+
   scale_color_manual(name="",values = c("Crocodylus size" = "tan1", 
                                         "Euthecodon size" = "orangered", "Hippo size" = "indianred4",
@@ -184,43 +153,11 @@ ggplot()+
                                         "Paleosol oxygen isotopes"= "seagreen3",
                                         "Herbivore"="olivedrab2",
                                         "DepEnv"= "seagreen4",
-                                        "Mecistopini size"="purple3"))+
+                                        "Mecistops size"="purple3"))+
   scale_x_continuous(breaks=c(-3.6,-3.44,-2.94,-2.53,-2.39,-2.32,-2.27,-2.06,-1.91,-1.76,-1.53,-1.38,-1.09))+
   scale_y_continuous(breaks = seq(-500, 5000, by = 500))+
   theme(panel.grid.minor = element_blank(),panel.background = element_rect(fill="white",color="black"),
         panel.grid.major = element_line(linetype = 'solid',
                                         colour = "lightgrey"),
         legend.key = element_blank(),axis.text.x=element_text(angle = 90))
-
-#exploratory-- temp/precip and euth and pelo
-
-ggplot(data=df)+
-  geom_line(aes(x=MidAge, y=AquaticMass,color="Aquatic turtle size"), size=2)+
-  geom_line(aes(x=LLAge, y=(NutzLakeLevel+20),color="Lake Level"), size=0.8)+
-  geom_point(aes(x=LLAge, y=(NutzLakeLevel+20),color="Lake Level"), size=1.2)+
-  #geom_line(aes(x=MidAge, y=(HFprecip/1000) ,color="Reconstructed Precip"), size=1)+
-  geom_point(aes(x=MidAge, y=AquaticMass,color="Pelomedusid Mass"), size=1.5)+
-  geom_point(aes(x=MidAge, y=TrionychidMass,color="Trionychid Mass"), size=1.5)+
-    #geom_line(aes(x=Midpoint.Age, y=hOscale,color="Herbivore O"), span=0.1, size=1)+
-  #geom_point(aes(x=Midpoint.Age, y=hOscale,color="Herbivore O"), span=0.1, size=1.5)+
-  # geom_point(aes(x=LLAge, y=LLscaleT,color="Lake level"), size=1)+
-  #geom_line(aes(x=Midpoint.Age, y=memOscale,color="Paleosol oxygen isotopes"), size=1)+
-  geom_point(aes(x=LevinAge, y=(Levind18O*2),color="Paleosol oxygen isotopes"), size=1)+
-  geom_line(aes(x=MidAge, y=(LevinDeltaO18*2),color="Paleosol oxygen isotopes"), size=1)+
-  geom_line(aes(x=MidAge, y=(OverallHerbivoreDeltaO18*2),color="Herbivore oxygen isotopes"), size=1)+
-  #geom_line(aes(x=MidAge, y=(LogEuthInterpolated*2), color="Varanus size"),size=2)+
-  labs(x="Time (Ma)", y="Body Mass (kg)\n Environmental Relative Scale")+
-  scale_color_manual(name="",values = c("Aquatic turtle size" = "lightskyblue", 
-                                        "Paleosol oxygen isotopes"="orange",
-                                        "Terrestrial tortoises" = "darkolivegreen4",
-                                        "Lake Level"= "blue",
-                                        "Soil Temp"= "maroon", "Herbivore oxygen isotopes"= "firebrick2",
-                                        "Trionychid Mass"= "darkslategrey", "Pelomedusid Mass"= "lightcoral"))+
-  scale_x_continuous(breaks=c(-3.6,-3.44,-2.94,-2.53,-2.39,-2.32,-2.27,-2.06,-1.91,-1.76,-1.53,-1.38,-1.09))+
-  scale_y_continuous(breaks = seq(-20, 200, by = 5))+
-  theme(panel.grid.minor = element_blank(),panel.background = element_rect(fill="white",color="black"),
-        panel.grid.major = element_line(linetype = 'solid',
-                                        colour = "lightgrey"),
-        legend.key = element_blank(),axis.text.x=element_text(angle = 90))
-
 
