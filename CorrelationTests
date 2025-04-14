@@ -1,4 +1,4 @@
-setwd("C:/Users/abbap/OneDrive - University Of Helsinki/Reptiles Papers/East Africa")
+# Set wd with data file
 setwd("C:/Users/abigpark/OneDrive - University Of Helsinki/Reptiles Papers/East Africa")
 library(tidyverse)
 library(Hmisc)
@@ -7,15 +7,21 @@ library(Hmisc)
 df <- read.csv("Shungura_Delta_Final_25.csv", header=T, row.names=1) 
 
 colnames(df)
-shapiro.test(df[,25]) #tests for normality for each column of data
-#shapiro.test(df$OverallHerbivoreDeltaC13)
+
+#test for normality for each column of data
+# If column is not normal, run Spearman correlation test instead of Pearson
+    # for all pairwise comparisons with that series
+shapiro.test(df[,25]) 
 
 
 #Table 2
+# correlation between reptile size and sampling
+# select mass series
 df_masses <- df %>% dplyr::select(AquaticMass, TrionychidMass, PelomedusidMass,
             TestudinidMass, EuthecodonMass, CrocodylusMass, MecistopsMass, PythonMass)
-df_logmass <- log10(df_masses)
+df_logmass <- log10(df_masses) #take log values
 
+# select sampling series
 df_sampling <- df %>% dplyr::select(ReptileSampling, TurtleSampling, CrocSampling, SquamateSampling, MidAge)
 results2 <- cbind(df_logmass, df_sampling)
 
@@ -37,20 +43,23 @@ for (i in 1:length(C)) {
 }
 colnames(mat) <- C
 rownames(mat) <- C
-write.csv(mat, "Table2_CorrelationResults_Feb25.csv")
+write.csv(mat, "Table2_CorrelationResults.csv")
 
 #Table 3a
+# correlation between reptile groups' maximum sizes
+# select reptile mass
 df_masses <- df %>% select(EuthecodonMass, CrocodylusMass, MecistopsMass,
                            TrionychidMass, PelomedusidMass,
                            TestudinidMass,
                            PythonMass)
 df_logmass <- log10(df_masses)
+
 #calculate correlations
 res3a <- rcorr(as.matrix(df_logmass),type="pearson")
 
 #save output correlation and p-value into readable table
 C <- colnames(df_masses)
-mat <- matrix(nrow=length(C),ncol=length(C)) #empty matrix for resultsfor (i in 1:length(C)) {         
+mat <- matrix(nrow=length(C),ncol=length(C))         
 for (i in 1:length(C)) {
   for (j in 1:length(C)) {
     ap <- round(res3a[[3]][i,j],3) #p-value in row i, column j
@@ -60,18 +69,21 @@ for (i in 1:length(C)) {
 }
 colnames(mat) <- C
 rownames(mat) <- C
-write.csv(mat, "Table3a_CorrelationResults_Feb25.csv")
+write.csv(mat, "Table3a_CorrelationResults.csv")
 
 #Table 3b
+# correlation in change between members
+# _Delta columns throughout are first differences
 df_massdelta <- df %>% dplyr::select(LogEuthecodon_Delta, LogCrocodylus_Delta, LogMecistopin_Delta,
                            LogPelo_Delta,
                            LogTestudinid_Delta, LogPython_Delta)
+
 #calculate correlations
 res3b <- rcorr(as.matrix(df_massdelta),type="pearson")
 
 #save output correlation and p-value into readable table
 C <- colnames(df_massdelta)
-mat <- matrix(nrow=length(C),ncol=length(C)) #empty matrix for resultsfor (i in 1:length(C)) {         
+mat <- matrix(nrow=length(C),ncol=length(C))         
 for (i in 1:length(C)) {
   for (j in 1:length(C)) {
     ap <- round(res3b[[3]][i,j],3) #p-value in row i, column j
@@ -81,10 +93,12 @@ for (i in 1:length(C)) {
 }
 colnames(mat) <- C
 rownames(mat) <- C
-write.csv(mat, "Table3b_CorrelationResults_Feb25.csv")
+write.csv(mat, "Table3b_CorrelationResults.csv")
 
 
 #Table 4a
+# correlation between reptile and mammal maximum sizes by member
+# all mass columns
 df_masses <- df %>% dplyr::select(PythonMass, EuthecodonMass, CrocodylusMass, MecistopsMass,
                            AquaticMass, TrionychidMass, PelomedusidMass,
                            TestudinidMass, 
@@ -94,14 +108,15 @@ df_masses <- df %>% dplyr::select(PythonMass, EuthecodonMass, CrocodylusMass, Me
                            Aepycerotini, Alcelaphini, Antilopini,
                            Bovini, Neotragini, Ovibovini, Reduncini,
                            Tragelaphini)
-df_logmass <- log10(df_masses)
+df_logmass <- log10(df_masses) # take log of values
+
 #calculate correlations
 res4p <- rcorr(as.matrix(df_logmass),type="pearson")
 res4s <- rcorr(as.matrix(df_logmass),type="spearman")
 
 #save output correlation and p-value into readable table
 C <- colnames(df_masses)
-mat <- matrix(nrow=length(C),ncol=length(C)) #empty matrix for resultsfor (i in 1:length(C)) {         
+mat <- matrix(nrow=length(C),ncol=length(C))          
 for (i in 1:length(C)) {
   for (j in 1:length(C)) {
     ap <- round(res4p[[3]][i,j],3) #p-value in row i, column j
@@ -113,13 +128,14 @@ for (i in 1:length(C)) {
 }
 colnames(mat) <- C
 rownames(mat) <- C
-write.csv(mat, "Table4a_CorrelationResults_Feb25.csv")
+write.csv(mat, "Table4a_CorrelationResults.csv")
 
-#spearman correlation with non-normal Tragelaphini mass and Hippos protkaru
+# individual spearman correlation with non-normal Tragelaphini mass and Hippo_protkaru
 attach(df_logmass)
 cor.test(EuthecodonMass, Hippos_protkaru, method="spearman")
 
 #Table 4b
+# first differences of same series in 4a
 df_massdelta <- df %>% dplyr::select(LogPython_Delta, LogEuthecodon_Delta, LogCrocodylus_Delta, LogMecistopin_Delta, 
                               LogAquatic_Delta, LogPelo_Delta,
                               LogTestudinid_Delta, 
@@ -133,7 +149,7 @@ res4b <- rcorr(as.matrix(df_massdelta),type="pearson")
 
 #save output correlation and p-value into readable table
 C <- colnames(df_massdelta)
-mat <- matrix(nrow=length(C),ncol=length(C)) #empty matrix for resultsfor (i in 1:length(C)) {         
+mat <- matrix(nrow=length(C),ncol=length(C))          
 for (i in 1:length(C)) {
   for (j in 1:length(C)) {
     ap <- round(res4b[[3]][i,j],3) #p-value in row i, column j
@@ -143,13 +159,16 @@ for (i in 1:length(C)) {
 }
 colnames(mat) <- C
 rownames(mat) <- C
-write.csv(mat, "Table4b_CorrelationResults_Feb25.csv")
+write.csv(mat, "Table4b_CorrelationResults.csv")
 
+# Individual Pearson correlation tests for non-normally distributed series
 attach(df_massdelta)
 cor.test(LogPython_Delta, LogTragelaphini_Delta, method="pearson")
 
 
 #Table 5a
+# correlation between all maximum size series and paleoenvironmental proxies 
+# select mass series
 df_masses <- df %>% dplyr::select(PythonMass, EuthecodonMass, CrocodylusMass, MecistopsMass, 
                               AquaticMass, TrionychidMass, PelomedusidMass,
                               TestudinidMass, Hippos_protkaru, Hippos_aethi,
@@ -157,9 +176,12 @@ df_masses <- df %>% dplyr::select(PythonMass, EuthecodonMass, CrocodylusMass, Me
                               Cercopithecidae, Bovidae,
                             Tragelaphini)
 df_logmass <- log10(df_masses)
+
+# select proxies
 df_sol <- df %>% dplyr::select(LevinDeltaC13, LevinDeltaO18,
             LakeLevel, PasseySoilTemp, HeinzelinEnv, HeinzelinMaxLake)
 df5a <- cbind(df_logmass, df_sol)
+
 #calculate correlations
 res5a <- rcorr(as.matrix(df5a),type="pearson")
 
@@ -175,16 +197,16 @@ for (i in 1:length(C)) {
 }
 colnames(mat) <- C
 rownames(mat) <- C
-write.csv(mat, "Table5a_CorrelationResults_Feb25.csv")
+write.csv(mat, "Table5a_CorrelationResults.csv")
 
-#spearman correlation with non-normal Heinzelin Env code, and Tragelaphini
+#spearman correlation for non-normal series
 attach(df5a)
 cor.test(PelomedusidMass,HeinzelinEnv,  method="spearman")
-
 cor.test(Tragelaphini,Over,  method="spearman")
 
 
 #Table 5b
+# first differences of same series in 5a
 df_delta <- df %>% dplyr::select(LogPython_Delta, LogEuthecodon_Delta, LogCrocodylus_Delta, LogMecistopin_Delta,
                             LogAquatic_Delta, LogPelo_Delta,
                             LogTestudinid_Delta, LogHippos_protkaru_Delta,
@@ -210,13 +232,15 @@ for (i in 1:length(C)) {
 }
 colnames(mat) <- C
 rownames(mat) <- C
-write.csv(mat, "Table5b_CorrelationResults_Feb25.csv")
+write.csv(mat, "Table5b_CorrelationResults.csv")
 
+# spearman tests for non-normal series
 attach(df)
-cor.test(TrionychidMass, TestudinidMass, method="pearson")
-
+cor.test(TrionychidMass, TestudinidMass, method="spearman")
 
 #Table 6a
+#correlation between maximum size series and mammalian faunal proxies
+# select size series
 df_masses <- df %>% dplyr::select(PythonMass,EuthecodonMass, CrocodylusMass, MecistopsMass,
                            AquaticMass, TrionychidMass, PelomedusidMass,
                            TestudinidMass, 
@@ -225,10 +249,12 @@ df_masses <- df %>% dplyr::select(PythonMass,EuthecodonMass, CrocodylusMass, Mec
                            Cercopithecidae, Bovidae,
                            Tragelaphini)
 df_logmass <- log10(df_masses)
+# select mammal proxies
 df_fauna <- df %>% dplyr::select(OverallHerbivoreDeltaC13, OverallHerbivoreDeltaO18,
                           AAHbovidPercent,RedunciniPercent,
                           ProportionGrasslandIndicator,HFprecip)
 df6a <- cbind(df_logmass, df_fauna)
+
 #calculate correlations
 res6a <- rcorr(as.matrix(df6a),type="pearson")
 
@@ -244,13 +270,14 @@ for (i in 1:length(C)) {
 }
 colnames(mat) <- C
 rownames(mat) <- C
-write.csv(mat, "Table6a_CorrelationResults_Feb25.csv")
+write.csv(mat, "Table6a_CorrelationResults.csv")
 
-#spearman for AAH, hippos_protkaru, Oherb dC13, tragelaphini
+#individual spearman tests for non-normal series
 attach(df6a)
 cor.test(PythonMass, OverallHerbivoreDeltaC13, method="spearman")
 
 #Table 6b
+# first differences of same series in 6a
 df_delta <- df %>% dplyr::select(LogPython_Delta,LogEuthecodon_Delta, LogCrocodylus_Delta, 
                           LogAquatic_Delta, LogPelo_Delta,
                           LogTestudinid_Delta, 
@@ -278,4 +305,4 @@ for (i in 1:length(C)) {
 }
 colnames(mat) <- C
 rownames(mat) <- C
-write.csv(mat, "Table6b_CorrelationResults_Feb25.csv")
+write.csv(mat, "Table6b_CorrelationResults.csv")
