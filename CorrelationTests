@@ -1,10 +1,10 @@
 # Set wd with data file
-setwd("C:/Users/abigpark/OneDrive - University Of Helsinki/Reptiles Papers/East Africa")
+setwd("C:/Users/...")
 library(tidyverse)
 library(Hmisc)
 
 #read in data for correlation analysis, including columns of change between members
-df <- read.csv("Shungura_Delta_Final_25.csv", header=T, row.names=1) 
+df <- read.csv("ShunguraBodySize_Delta.csv", header=T, row.names=1) 
 
 colnames(df)
 
