@@ -13,6 +13,6 @@ ShunguraBodySize_Figures includes the same data, but with further series used fo
 This data sheet also includes higher-reslution data on lake level NutzLakeLevel, (from Nutz et al. 2020), accompanied by ages of each sample in the column LLAge. For paleosol isotope data, sample ages are in the LevinAge column, followed by the d18O and d13C values.  
 
 # Code
-All correlation tests carried out can be replicated using the ShunguraBodySize_Delta script. 
-ShunguraBodySize_Figures includes code to plot versions and adaptations of the figures in the manuscript. 
+All correlation tests carried out can be replicated using the CorrelationTests script. 
+PlottingFigures includes code to plot versions and adaptations of the figures in the manuscript. 
 
